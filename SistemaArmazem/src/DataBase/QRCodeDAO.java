@@ -94,7 +94,22 @@ public class QRCodeDAO implements Map<String, QRCode> {
 
     @Override
     public QRCode put(String key, QRCode value) {
-        return null;
+        QRCode res = null;
+        try (Connection conn =
+                     DriverManager.getConnection("jdbc:mysql://"+DATABASE+CREDENTIALS);
+             Statement stm = conn.createStatement()) {
+
+            stm.executeUpdate(
+                    "INSERT INTO qrcodes VALUES ('"+value.getCodQR()+"', '"+value.getProduto() +"') " +
+                            "ON DUPLICATE KEY UPDATE Produto=VALUES(Produto)");
+
+
+        } catch (SQLException e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+        return res;
     }
 
     @Override
