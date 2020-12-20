@@ -5,9 +5,9 @@ public class Aresta {
 	private Vertice verticeFinal;
 	private Vertice verticeInicial;
 	private String codAresta;
-	private int dist;
+	private float dist;
 
-	public Aresta(Vertice verticeFinal, Vertice verticeInicial, String codAresta, int dist) {
+	public Aresta(Vertice verticeFinal, Vertice verticeInicial, String codAresta, float dist) {
 		this.verticeFinal = verticeFinal;
 		this.verticeInicial = verticeInicial;
 		this.codAresta = codAresta;
@@ -38,11 +38,11 @@ public class Aresta {
 		this.codAresta = codAresta;
 	}
 
-	public int getDist() {
+	public float getDist() {
 		return dist;
 	}
 
-	public void setDist(int dist) {
+	public void setDist(float dist) {
 		this.dist = dist;
 	}
 

@@ -1,30 +1,22 @@
 package DataBase;
 
-import GestPaletes.Palete;
 import GestPaletes.QRCode;
 
 import java.sql.*;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class QRCodeDAO implements Map<String, QRCode> {
 
     private static QRCodeDAO singleton = null;
 
-    private static final String USERNAME = "g19";
-    private static final String PASSWORD = "G19.1234567";
-    private static final String CREDENTIALS = "?user="+USERNAME+"&password="+PASSWORD;
-    private static final String DATABASE = "localhost:3306/SistemaArmazem";
 
     private QRCodeDAO() {
 
-        try (Connection conn =
-                     DriverManager.getConnection("jdbc:mysql://"+DATABASE+CREDENTIALS);
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement()) {
             String sql = "CREATE TABLE IF NOT EXISTS qrCodes (" +
                     "Codigo varchar(10) NOT NULL PRIMARY KEY," +
-                    "Produto varchar(45) NOT NULL)";
+                    "Produto varchar(45) NOT NULL DEFAULT 'n/d')";
             stm.executeUpdate(sql);
 
         } catch (SQLException e) {
@@ -45,8 +37,7 @@ public class QRCodeDAO implements Map<String, QRCode> {
 
     public int size() {
         int i = 0;
-        try (Connection conn =
-                     DriverManager.getConnection("jdbc:mysql://"+DATABASE+CREDENTIALS);
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement();
              ResultSet rs = stm.executeQuery("SELECT count(*) FROM qrCodes")) {
             if(rs.next()) {
@@ -68,8 +59,7 @@ public class QRCodeDAO implements Map<String, QRCode> {
 
     public boolean containsKey(Object key) {
         boolean r;
-        try (Connection conn =
-                     DriverManager.getConnection("jdbc:mysql://"+DATABASE+CREDENTIALS);
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement();
              ResultSet rs =
                      stm.executeQuery("SELECT Codigo FROM qrCodes WHERE Codigo ='"+key.toString()+"'")) {
@@ -81,29 +71,39 @@ public class QRCodeDAO implements Map<String, QRCode> {
         return r;
     }
 
-    @Override
+
     public boolean containsValue(Object value) {
         QRCode a = (QRCode) value;
         return this.containsKey(a.getCodQR());
     }
 
-    @Override
+
     public QRCode get(Object key) {
-        return null;
+        QRCode a = null;
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+             Statement stm = conn.createStatement();
+             ResultSet rs = stm.executeQuery("SELECT * FROM qrCodes WHERE Codigo='"+key+"'")) {
+            if (rs.next()) {  // A chave existe na tabela
+                a = new QRCode(rs.getString("Codigo"), rs.getString("Produto"));
+            }
+        } catch (SQLException e) {
+            // Database error!
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+        return a;
     }
 
-    @Override
+
     public QRCode put(String key, QRCode value) {
         QRCode res = null;
-        try (Connection conn =
-                     DriverManager.getConnection("jdbc:mysql://"+DATABASE+CREDENTIALS);
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement()) {
 
+            // Actualizar o aluno
             stm.executeUpdate(
-                    "INSERT INTO qrcodes VALUES ('"+value.getCodQR()+"', '"+value.getProduto() +"') " +
-                            "ON DUPLICATE KEY UPDATE Produto=VALUES(Produto)");
-
-
+                    "INSERT INTO qrCodes VALUES ('"+value.getCodQR()+"', '"+value.getProduto()+"') " +
+                            "ON DUPLICATE KEY UPDATE Codigo=VALUES(Codigo), Produto=VALUES(Produto)");
         } catch (SQLException e) {
             // Database error!
             e.printStackTrace();
@@ -112,11 +112,10 @@ public class QRCodeDAO implements Map<String, QRCode> {
         return res;
     }
 
-    @Override
+
     public QRCode remove(Object key) {
         QRCode t = this.get(key);
-        try (Connection conn =
-                     DriverManager.getConnection("jdbc:mysql://"+DATABASE+CREDENTIALS);
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement()) {
             stm.executeUpdate("DELETE FROM qrCodes WHERE Codigo='"+key+"'");
         } catch (Exception e) {
@@ -127,7 +126,7 @@ public class QRCodeDAO implements Map<String, QRCode> {
         return t;
     }
 
-    @Override
+
     public void putAll(Map<? extends String, ? extends QRCode> qrcodes) {
         for(QRCode t : qrcodes.values()) {
             this.put(t.getCodQR(), t);
@@ -135,11 +134,11 @@ public class QRCodeDAO implements Map<String, QRCode> {
 
     }
 
-    @Override
+
     public void clear() {
-        try (Connection conn =
-                     DriverManager.getConnection("jdbc:mysql://"+DATABASE+CREDENTIALS);
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement()) {
+            stm.executeUpdate("UPDATE paletes SET QRCode=NULL");
             stm.executeUpdate("TRUNCATE qrCodes");
         } catch (SQLException e) {
             // Database error!
@@ -149,19 +148,52 @@ public class QRCodeDAO implements Map<String, QRCode> {
 
     }
 
-    @Override
     public Set<String> keySet() {
-        throw new NullPointerException("Not implemented!");
+        Set<String> col = new HashSet<>();
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+             Statement stm = conn.createStatement();
+             ResultSet rs = stm.executeQuery("SELECT Codigo FROM qrCodes")) {
+            while (rs.next()) {
+                col.add(rs.getString("Codigo"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+        return col;
     }
 
-    @Override
     public Collection<QRCode> values() {
-        return null;
+        Collection<QRCode> col = new HashSet<>();
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+             Statement stm = conn.createStatement();
+             ResultSet rs = stm.executeQuery("SELECT Codigo FROM qrCodes")) {
+            while (rs.next()) {
+                col.add(this.get(rs.getString("Codigo")));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+        return col;
     }
 
-    @Override
+
     public Set<Entry<String, QRCode>> entrySet() {
-        throw new NullPointerException("public Set<Map.Entry<String,QRCode>> entrySet() not implemented!");
+        Map.Entry<String,QRCode> entry;
+        HashSet<Entry<String, QRCode>> col = new HashSet<>();
+        try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
+             Statement stm = conn.createStatement();
+             ResultSet rs = stm.executeQuery("SELECT Codigo FROM qrCodes")) {
+            while (rs.next()) {
+                entry =  new AbstractMap.SimpleEntry<>(rs.getString("Codigo"),this.get(rs.getString("Codigo")));
+                col.add(entry);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new NullPointerException(e.getMessage());
+        }
+        return col;
     }
 
 }

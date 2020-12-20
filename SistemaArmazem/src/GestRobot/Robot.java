@@ -2,14 +2,16 @@ package GestRobot;
 
 public class Robot {
 
-	private Rota rota;
 	private String codRobot;
-	private int estado;
+	private Rota rota;
+	private int estado; /** 0 = Disponível; 1 = Ocupado */
+	private Vertice localizacao;
 
-	public Robot(Rota rota, String codRobot, int estado) {
+	public Robot(String codRobot, int estado, Vertice localizacao, Rota rota) {
 		this.rota = rota;
 		this.codRobot = codRobot;
 		this.estado = estado;
+		this.localizacao = localizacao;
 	}
 
 	public Rota getRota() {
@@ -36,11 +38,22 @@ public class Robot {
 		this.estado = estado;
 	}
 
+	public Vertice getLocalizacao() {
+		return localizacao;
+	}
+
+	public void setLocalizacao(Vertice localizacao) {
+		this.localizacao = localizacao;
+	}
+
+
+
 	@Override
 	public String toString() {
 		return "Robot:" +
 				" " +  codRobot +
 				" " + rota.toString() +
-				" " + estado;
+				" " + estado +
+				" " + localizacao.toString();
 	}
 }

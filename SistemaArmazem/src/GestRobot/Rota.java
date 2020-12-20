@@ -6,14 +6,14 @@ import java.util.*;
 
 public class Rota {
 
-	private Collection<ArestaDAO> caminho;
+	private String codRota;
+	private Collection<Aresta> caminho;
 	private Vertice origem;
 	private Vertice destino;
-	private String codRota;
 	private String codPalete;
 
 
-	public Rota(Collection<ArestaDAO> caminho, Vertice origem, Vertice destino, String codRota, String codPalete) {
+	public Rota(String codRota, Vertice origem, Vertice destino, String codPalete, Collection<Aresta> caminho) {
 		this.caminho = caminho;
 		this.origem = origem;
 		this.destino = destino;
@@ -21,11 +21,19 @@ public class Rota {
 		this.codPalete = codPalete;
 	}
 
-	public Collection<ArestaDAO> getCaminho() {
+	public Rota(String codRota, Vertice origem, Vertice destino, String codPalete) {
+		this.codRota = codRota;
+		this.origem = origem;
+		this.destino = destino;
+		this.codPalete = codPalete;
+		this.caminho = null;
+	}
+
+	public Collection<Aresta> getCaminho() {
 		return caminho;
 	}
 
-	public void setCaminho(Collection<ArestaDAO> caminho) {
+	public void setCaminho(Collection<Aresta> caminho) {
 		this.caminho = caminho;
 	}
 

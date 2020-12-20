@@ -5,14 +5,14 @@ public class Palete {
 
 	private QRCode codQR;
 	private String codPalete;
-	private String codRobot;
+	private int inRobot;
 	private Vertice localizacao;
 
 
-	public Palete(QRCode codQR, String codPalete, String codRobot, Vertice localizacao) {
+	public Palete(QRCode codQR, String codPalete, int inRobot, Vertice localizacao) {
 		this.codQR = codQR;
 		this.codPalete = codPalete;
-		this.codRobot = codRobot;
+		this.inRobot = inRobot;
 		this.localizacao = localizacao;
 	}
 
@@ -32,12 +32,12 @@ public class Palete {
 		this.codPalete = codPalete;
 	}
 
-	public String getCodRobot() {
-		return codRobot;
+	public int isInRobot() {
+		return inRobot;
 	}
 
-	public void setCodRobot(String codRobot) {
-		this.codRobot = codRobot;
+	public void setInRobot(int inRobot) {
+		this.inRobot = inRobot;
 	}
 
 	public Vertice getLocalizacao() {
@@ -54,7 +54,7 @@ public class Palete {
 		return "Palete:" +
 				" " + codQR +
 				" " + codPalete +
-				" " + codRobot +
+				" " + inRobot +
 				" " + localizacao;
 	}
 }
