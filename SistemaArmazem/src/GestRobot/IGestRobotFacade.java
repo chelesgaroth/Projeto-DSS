@@ -1,8 +1,7 @@
 package GestRobot;
 
 
-import Exceptions.EspacoInsuficienteNoArmazem;
-import Exceptions.RobotsNaoDisponiveis;
+import Exceptions.*;
 
 import java.util.List;
 import java.util.Map;
@@ -32,16 +31,18 @@ public interface IGestRobotFacade {
 	 * 
 	 * @param codRobot
 	 */
-	void calcula_rota(String codRobot, int EntregaOuRecolha);
-	void atualiza_LocalizacaoRobot(String codRobot, int od);
+	void calcula_rota(String codRobot, int EntregaOuRecolha) throws OrigemIgualDestino;
+	void atualiza_LocalizacaoRobot(String codRobot, int od) throws RotaNull;
 
 	boolean haRobots();
 	Vertice getVerticeZonaDescarga();
 	String getRobotPalete(String codPalete);
-	String getPaleteDoRobot(String codRobot);
-	void atualizaOcupacaoVertice(Vertice v, int e);
+	String getPaleteDoRobot(String codRobot) throws RotaNull;
+	void atualizaOcupacaoVertice(String codVertice, int e);
 	void alteraRota(String codRobot, Rota rota);
 	Vertice getLocalizacaoRobot(String codRobot);
 	Map<String,String> listagemPaletesInRobot(List<String> paletes);
 	String getPrateleiraLivre() throws EspacoInsuficienteNoArmazem;
+	List<String> getCaminho(String codRobot);
+	boolean validaRobot(String codRobot) throws RobotNaoExiste;
 }

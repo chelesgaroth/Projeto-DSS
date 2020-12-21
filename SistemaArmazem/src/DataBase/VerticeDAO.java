@@ -98,10 +98,10 @@ public class VerticeDAO implements Map<String,Vertice>{
         Vertice res = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement()) {
-                // Actualizar o aluno
-                stm.executeUpdate(
-                        "INSERT INTO vertices VALUES ('" + value.getCodVertice() + "', '" + value.getDesignacao() + "', '" + value.getOcupacao() + "') " +
-                                "ON DUPLICATE KEY UPDATE Codigo=VALUES(Codigo), Designacao=VALUES(Designacao), Ocupacao=VALUES(Ocupacao)");
+            // Actualizar o aluno
+            stm.executeUpdate(
+                    "INSERT INTO vertices VALUES ('" + value.getCodVertice() + "', '" + value.getDesignacao() + "', '" + value.getOcupacao() + "') " +
+                            "ON DUPLICATE KEY UPDATE Codigo=VALUES(Codigo), Designacao=VALUES(Designacao), Ocupacao=VALUES(Ocupacao)");
 
         } catch (SQLException e) {
             // Database error!

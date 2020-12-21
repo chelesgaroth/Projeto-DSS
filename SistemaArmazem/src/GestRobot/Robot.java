@@ -1,5 +1,7 @@
 package GestRobot;
 
+import Exceptions.RotaNull;
+
 public class Robot {
 
 	private String codRobot;
@@ -47,7 +49,6 @@ public class Robot {
 	}
 
 
-
 	@Override
 	public String toString() {
 		return "Robot:" +
@@ -55,5 +56,24 @@ public class Robot {
 				" " + rota.toString() +
 				" " + estado +
 				" " + localizacao.toString();
+	}
+
+	public void atualizaLocalizacao(int od) throws RotaNull {
+		Vertice loc;
+		if(rota == null) throw new RotaNull("Robot não está a efetuar nenhuma rota");
+		if (od == 0) // ou seja queremos atualizar para a origem do caminho
+			loc = rota.getOrigem();
+		else
+			loc = rota.getDestino();
+		setLocalizacao(loc);
+	}
+
+	public void notifica_transporte(String codPalete, Vertice locP) {
+		estado = 1;
+		rota = new Rota("R"+codRobot,locP,null,codPalete,null);
+	}
+
+	public void indica_destino(Vertice destino) {
+		rota.setDestino(destino);
 	}
 }

@@ -51,12 +51,12 @@ public class Tabela {
     }
 
     public void printaTitulo(){
-        System.out.printf("               %-27s",titulo);
+        System.out.printf("\033[1;35m"+"               %-27s"+ "\033[0m",titulo);
     }
 
     public void printaSubtitulos(){
         for(String i : subtitulos){
-            System.out.printf("%-50s",i);
+            System.out.printf("\033[1;36m" + "%-50s"+ "\033[0m",i);
         }
     }
     public void printaLinha(String add){
@@ -71,7 +71,7 @@ public class Tabela {
         }
     }
     public void menu (int escolha){
-        if(escolha==0)System.out.print("\n"+"\033[1;35m"+"Menu(M)"+ "\033[0m");
+        if(escolha==0)System.out.print("\033[1;35m"+"Menu(M)"+ "\033[0m");
         else System.out.println("\033[1;35m"+"Menu(M)                                  Opção(O)"+ "\033[0m");
     }
 

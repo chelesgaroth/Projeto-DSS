@@ -3,7 +3,10 @@ package GestPaletes;
 
 import DataBase.PaleteDAO;
 import DataBase.QRCodeDAO;
+import Exceptions.NaoLevantouPalete;
+import Exceptions.PaleteJaExiste;
 import Exceptions.QRCodeInvalido;
+import Exceptions.SemPaletesParaTransportar;
 import GestRobot.Vertice;
 
 import java.util.ArrayList;
@@ -25,14 +28,15 @@ public class GestPaletesFacade implements IGestPaletesFacade {
 	public Map<String,String> disponibiliza_listagem() {
 		Map<String,String> res = new HashMap<>();
 		for (Palete p : paletes.values()){
-			if (p.isInRobot() == 0)
+			if (p.getInRobot() == 0 || p.getInRobot() == 2)
 				res.put(p.getCodPalete(),p.getLocalizacao().getDesignacao());
 		}
 		return  res;
 	}
 
-	public void registaPalete(String codQR, String codPalete , Vertice loc) throws QRCodeInvalido {
+	public void registaPalete(String codQR, String codPalete , Vertice loc) throws QRCodeInvalido, PaleteJaExiste {
 		if (!existeQRcode(codQR)) throw new QRCodeInvalido("Produto não faz parte do armazém!");
+		if (paletes.containsKey(codPalete)) throw new PaleteJaExiste("Código da palete já existe no armazem!");
 		else {
 			this.paletes.put(codPalete, new Palete(codigosQR.get(codQR), codPalete, 0, loc));
 		}
@@ -73,17 +77,21 @@ public class GestPaletesFacade implements IGestPaletesFacade {
 	public List<String> getPaletesEmRobots(){
         List<String> res = new ArrayList<>();
         for (Palete p : paletes.values()) {
-            if (p.isInRobot() == 1) res.add(p.getCodPalete());
+            if (p.getInRobot() == 1) res.add(p.getCodPalete());
         }
         return res;
     }
 
-    public String paleteZonaD(){
-		String res = null;
+    public String paleteZonaD() throws SemPaletesParaTransportar {
 		for (Palete p : paletes.values()) {
-			if (p.getLocalizacao().getCodVertice().equals("1")) res = p.getCodPalete();
+			if (p.getInRobot() == 0 && p.getLocalizacao().getCodVertice().equals("1")) return p.getCodPalete();
 		}
-		return res;
+		throw new SemPaletesParaTransportar("Não há paletes por atribuir.");
+	}
+
+	public boolean validaEstadoInRobot(String codPalete, int estado) throws NaoLevantouPalete {
+		if(paletes.get(codPalete).getInRobot()==estado) return true;
+		throw new NaoLevantouPalete("Ainda não recolheu a palete! O robot não tem Palete.");
 	}
 
 }

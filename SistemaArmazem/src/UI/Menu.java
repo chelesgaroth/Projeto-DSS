@@ -93,13 +93,14 @@ public class Menu {
 
     /** Apresentar o menu */
     private void show() {
-        System.out.println("\n ****** Menu Sistema ****** \n");
+        System.out.println("\033[1;36m"+ "\n**************** Menu Sistema ****************"+ "\033[0m");
         for (int i=0; i<this.opcoes.size(); i++) {
-            System.out.print(i+1);
-            System.out.print(" - ");
+            System.out.print("\033[1;33m" + (i+1) + "\033[0m");
+            System.out.print("\033[1;33m"+" - "+"\033[0m");
             System.out.println(this.disponivel.get(i).validate()?this.opcoes.get(i):"\u001B[31mTemporariamente Indisponível\u001B[0m");
         }
-        System.out.println("0 - Sair");
+        System.out.println("\033[1;33m"+"\n0 - Sair"+ "\033[0m");
+        System.out.println("\033[1;36m"+ "**********************************************"+ "\033[0m");
     }
 
     /** Ler uma opção válida */
@@ -107,7 +108,7 @@ public class Menu {
         int op;
         //Scanner is = new Scanner(System.in);
 
-        System.out.print("Opção: ");
+        System.out.print("\nOpção: ");
         try {
             String line = is.nextLine();
             op = Integer.parseInt(line);
@@ -116,7 +117,7 @@ public class Menu {
             op = -1;
         }
         if (op<0 || op>this.opcoes.size()) {
-            System.out.println("Opção Inválida!!");
+            System.out.println("\u001B[31mOpção Inválida!!\u001B[0m");
             op = -1;
         }
         return op;

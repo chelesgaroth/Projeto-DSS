@@ -87,7 +87,7 @@ public class ArestaDAO implements Map<String,Aresta>{
             if (rs.next()) {  // A chave existe na tabela
                 Vertice vI = getVertice(rs.getString("VerticeInicial"));
                 Vertice vF = getVertice(rs.getString("VerticeFinal"));
-                a = new Aresta(vF,vI ,rs.getString("Codigo"), rs.getFloat("Distancia"));
+                a = new Aresta(vF,vI ,rs.getString("Codigo"), rs.getInt("Distancia"));
             }
         } catch (SQLException e) {
             // Database error!
@@ -120,7 +120,7 @@ public class ArestaDAO implements Map<String,Aresta>{
             else {
                 // Actualizar o aluno
                 stm.executeUpdate(
-                        "INSERT INTO arestas VALUES ('" + value.getCodAresta() + "', '" + value.getDist() + "', '" + value.getVerticeInicial().getCodVertice() + "', '" + value.getVerticeFinal().getCodVertice() + "', NULL) " +
+                        "INSERT INTO arestas VALUES ('" + value.getCodAresta() + "', '" + value.getDist() + "', '" + value.getVerticeInicial().getCodVertice() + "', '" + value.getVerticeFinal().getCodVertice() + "') " +
                                 "ON DUPLICATE KEY UPDATE Distancia=VALUES(Distancia), VerticeInicial=VALUES(VerticeInicial), VerticeFinal=VALUES(VerticeFinal)");
             }
         } catch (SQLException e) {

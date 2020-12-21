@@ -34,6 +34,7 @@ public class RobotDAO implements Map<String, Robot> {
             sql = "CREATE TABLE IF NOT EXISTS arestasRotas (" +
                     "CodRota varchar(10) NOT NULL , foreign key(CodRota) references rotas(CodRota)," +
                     "CodAresta varchar(10) NOT NULL , foreign key(CodAresta) references arestas(Codigo)," +
+                    "Pos int(2) NOT NULL DEFAULT 0," +
                     "PRIMARY KEY (CodRota,CodAresta))";
             stm.executeUpdate(sql);
 
@@ -114,8 +115,8 @@ public class RobotDAO implements Map<String, Robot> {
             if (rs.next()) {  // A chave existe na tabela
 
                 //Reconstruir a ArestasRota
-                Collection<Aresta> caminho = new HashSet<>();
-                String sql = "SELECT * FROM arestasRotas WHERE CodRota ='"+rs.getString("Rota")+"'";
+                Collection<Aresta> caminho = new ArrayList<>();
+                String sql = "SELECT * FROM arestasRotas WHERE CodRota ='"+rs.getString("Rota")+"'ORDER BY Pos";
                 try (Connection conn3 = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
                      Statement stm3 = conn3.createStatement();
                      ResultSet rs3 = stm3.executeQuery(sql)) {
@@ -157,7 +158,7 @@ public class RobotDAO implements Map<String, Robot> {
              Statement stm = conn.createStatement();
              ResultSet reV = stm.executeQuery("SELECT * FROM arestas WHERE Codigo='"+cod+ "'")){
             if(reV.next()){
-                a = new Aresta(getVertice(reV.getString("VerticeInicial")),getVertice(reV.getString("VerticeFinal")), reV.getString("Codigo"), reV.getFloat("Distancia"));
+                a = new Aresta(getVertice(reV.getString("VerticeFinal")), getVertice(reV.getString("VerticeInicial")), reV.getString("Codigo"), reV.getFloat("Distancia"));
             }
         }
         return a;
@@ -232,14 +233,23 @@ public class RobotDAO implements Map<String, Robot> {
                                 "ON DUPLICATE KEY UPDATE Origem=Values(Origem)," +
                                 "Destino=Values(Destino)," +
                                 "CodPalete=Values(CodPalete)");
+
+                //Apagar todos as arestas que pertençam à rota que queremos dar update
+                Robot velho = get(key);
+                Rota rV = velho.getRota();
+                stm.executeUpdate("DELETE FROM arestasRotas WHERE CodRota='"+ rV.getCodRota()+"'");
                 Collection<Aresta> caminho = rota.getCaminho();
+                int i = 1;
                 for(Aresta a : caminho){
                     stm.executeUpdate(
                             "INSERT INTO arestasRotas " +
                                     "VALUES ('" + rota.getCodRota() + "', '" +
-                                    a.getCodAresta() + "') " +
+                                    a.getCodAresta() + "', '" + i +"') " +
                                     "ON DUPLICATE KEY UPDATE CodRota=Values(CodRota)," +
-                                    "CodAresta=Values(CodAresta)");
+                                    "CodAresta=Values(CodAresta)," + "Pos=Values(Pos)");
+                    /*stm.executeUpdate(
+                            "UPDATE arestasRotas SET Pos = Pos + 1");*/
+                    i++;
                 }
                 // Atualizar o Robot
                 stm.executeUpdate(

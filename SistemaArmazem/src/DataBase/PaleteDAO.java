@@ -146,7 +146,7 @@ public class PaleteDAO implements Map<String, Palete> {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement()) {
                 stm.executeUpdate(
-                        "INSERT INTO paletes VALUES ('" + palete.getCodPalete() + "','" + palete.getCodQR().getCodQR() + "','" + palete.isInRobot() + "','" + palete.getLocalizacao().getCodVertice() + "') " +
+                        "INSERT INTO paletes VALUES ('" + palete.getCodPalete() + "','" + palete.getCodQR().getCodQR() + "','" + palete.getInRobot() + "','" + palete.getLocalizacao().getCodVertice() + "') " +
                                 "ON DUPLICATE KEY UPDATE InRobot=VALUES(InRobot) , Localizacao=VALUES(Localizacao)");
 
         } catch (SQLException e) {

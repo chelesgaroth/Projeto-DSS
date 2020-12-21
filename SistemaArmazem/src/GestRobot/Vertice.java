@@ -1,10 +1,12 @@
 package GestRobot;
 
+import java.util.Objects;
+
 public class Vertice {
 
 	private String codVertice;
 	private String designacao;
-	private int ocupacao;
+	private int ocupacao; // se for -1 prateleira foi reservada para receber palete
 
 	public Vertice(String codVertice, String designacao, int ocupacao) {
 
@@ -39,12 +41,25 @@ public class Vertice {
 	}
 
 	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Vertice vertice = (Vertice) o;
+		return codVertice.equals(vertice.codVertice);
+	}
+
+
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(codVertice);
+	}
+
+	@Override
 	public String toString() {
 		return "Vertice:" +
 				" " + designacao +
 				" " + ocupacao +
 				" " + codVertice;
 	}
-
-
 }

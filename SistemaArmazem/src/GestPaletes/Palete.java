@@ -32,7 +32,7 @@ public class Palete {
 		this.codPalete = codPalete;
 	}
 
-	public int isInRobot() {
+	public int getInRobot() {
 		return inRobot;
 	}
 

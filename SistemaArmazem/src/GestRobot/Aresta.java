@@ -48,8 +48,8 @@ public class Aresta {
 
 	public String toString() {
 		return "Aresta:" +
-				verticeFinal + " " +
 				verticeInicial + " " +
+				verticeFinal + " " +
 				codAresta + " " +
 				dist;
 	}

@@ -1,6 +1,9 @@
 package GestPaletes;
 
+import Exceptions.NaoLevantouPalete;
+import Exceptions.PaleteJaExiste;
 import Exceptions.QRCodeInvalido;
+import Exceptions.SemPaletesParaTransportar;
 import GestRobot.Vertice;
 
 import java.util.List;
@@ -11,7 +14,7 @@ public interface IGestPaletesFacade {
 	Map<String,String> disponibiliza_listagem();
 
 
-	void registaPalete(String codQR, String codPalete , Vertice loc) throws QRCodeInvalido;
+	void registaPalete(String codQR, String codPalete , Vertice loc) throws QRCodeInvalido, PaleteJaExiste;
 
 	/**
 	 * 
@@ -29,5 +32,6 @@ public interface IGestPaletesFacade {
 	boolean haPaletes();
 	boolean existeQRcode(String qr);
 	List<String> getPaletesEmRobots();
-	String paleteZonaD();
+	String paleteZonaD() throws SemPaletesParaTransportar;
+	boolean validaEstadoInRobot(String codPalete, int estado) throws NaoLevantouPalete;
 }

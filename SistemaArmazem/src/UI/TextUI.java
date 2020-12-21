@@ -1,16 +1,11 @@
 package UI;
 
 import Exceptions.*;
-import GestPaletes.GestPaletesFacade;
-import GestPaletes.IGestPaletesFacade;
-
+import GestPaletes.*;
 import GestRobot.*;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class TextUI {
@@ -39,9 +34,9 @@ public class TextUI {
      * Executa o menu principal e invoca o método correspondente à opção seleccionada.
      */
     public void run() {
-        System.out.println("Bem vindo ao Sistema do Armazém!");
+        System.out.println("\033[1;35mBem vindo ao Sistema do Armazém!\033[0m");
         this.menuPrincipal();
-        System.out.println("Adeus!");
+        System.out.println("\033[1;36m"+"Adeus!"+"\033[0m");
     }
 
     // Métodos auxiliares - Estados da UI
@@ -109,53 +104,45 @@ public class TextUI {
             String qrCode = scin.nextLine();
             System.out.println("Inserir Código da Palete: ");
             String codPalete = scin.nextLine();
-            try {
-                this.modelP.registaPalete(qrCode,codPalete, modelR.getVerticeZonaDescarga());
-                System.out.println("Registo Concluído!!!");
-                System.out.println("Requisitando transporte...");
-                comunicaOrdemTransporte(codPalete);
-            }
-            catch (QRCodeInvalido qr) {
-                System.out.println(qr.getMessage());
-            }
-
+            this.modelP.registaPalete(qrCode,codPalete, modelR.getVerticeZonaDescarga());
+            System.out.println("\033[1;36m*\033[0m"+"Registo Concluído!!!");
+            System.out.println("\033[1;36m*\033[0m"+"Requisitando transporte...");
+            comunicaOrdemTransporte(codPalete);
         }
-        catch (NullPointerException e){
-            System.out.println(e.getMessage());
+        catch (QRCodeInvalido | PaleteJaExiste | NullPointerException e) {
+            System.out.println("\033[1;31m" + e.getMessage() +"\033[0m");
         }
     }
 
     /**
      *  Estado - Comunica Ordem de Transporte
      */
-
     void comunicaOrdemTransporte(String codPalete){
         //considerando que a origem é onde a palete está
         // temos de calcular a rota até à origem (locRobot -> origem) e depois dentro do metodo calcula rota chamamos o
         // alteraRota para dar a rota ao robot
         try {
-            try {
-                String codRobot = modelR.getRobotDisponivel();
-                try {
-                    String destino = modelR.getPrateleiraLivre();
-                    modelR.notifica_transporte(codRobot,codPalete,modelP.getLocalizacaoPalete(codPalete));
-                    modelR.indica_destino(codRobot,destino);
-                    System.out.println("O Robot " + codRobot + " foi notificado!! Em breve irá começar o seu percurso.");
-                    modelR.calcula_rota(codRobot,0);
-
-                    System.out.println(codRobot+ ": A Iniciar Percurso...");
-
-                }
-                catch (EspacoInsuficienteNoArmazem e){
-                    System.out.println(e.getMessage());
-                }
+            String codRobot = modelR.getRobotDisponivel();
+            modelR.validaRobot(codRobot);
+            String destino = modelR.getPrateleiraLivre();
+            modelR.atualizaOcupacaoVertice(destino,-1);
+            modelR.notifica_transporte(codRobot,codPalete,modelP.getLocalizacaoPalete(codPalete));
+            modelP.atualiza_localizacaoPalete(codPalete,null,2);
+            modelR.indica_destino(codRobot,destino);
+            System.out.println("\nO Robot " + "\033[1;35m" + codRobot + "\033[0m" + " foi notificado para transportar a palete "+ "\033[1;35m" + codPalete + "\033[0m" + "!! Em breve irá começar o seu percurso.");
+            modelR.calcula_rota(codRobot,0);
+            System.out.println("\033[1;35m"+ codRobot+ "\033[0m" + ": A Iniciar Percurso...");
+            List<String> lis = modelR.getCaminho(codRobot);
+            //Collections.reverse(lis);
+            System.out.print("\n\033[1;37m"+ "Percurso: " + "\033[0m" );
+            System.out.print(lis.get(0));
+            for(int i=1 ; i<lis.size(); i++){
+                System.out.print(" ⇒ ");
+                System.out.print(lis.get(i));
             }
-            catch (RobotsNaoDisponiveis e){
-                System.out.println(e.getMessage());
-            }
-
-       } catch (NullPointerException e){
-            System.out.println(e.getMessage());
+        }
+        catch (EspacoInsuficienteNoArmazem | NullPointerException | RobotsNaoDisponiveis | OrigemIgualDestino | RobotNaoExiste e){
+            System.out.println("\033[1;31m" + e.getMessage() +"\033[0m");
         }
     }
 
@@ -167,14 +154,23 @@ public class TextUI {
         try{
             System.out.println("Código Robot: ");
             String codRobot = scin.nextLine();
+            modelR.validaRobot(codRobot);
             modelR.atualiza_LocalizacaoRobot(codRobot,0); //atualiza a localizacao para a origem (sitio da palete)
-            modelP.atualiza_localizacaoPalete(modelR.getPaleteDoRobot(codRobot),null,1);
-            System.out.println(codRobot+ ": Recolhi a Palete.");
+            String codPalete = modelR.getPaleteDoRobot(codRobot);
+            modelP.atualiza_localizacaoPalete(codPalete,null,1);
+            System.out.println("\033[1;35m" + codRobot + "\033[0m" + ": Recolhi a Palete " + "\033[1;35m" + codPalete + "\033[0m");
             modelR.calcula_rota(codRobot,1);
-            System.out.println(codRobot+ ": A Iniciar Percurso...");
+            System.out.println("\033[1;35m" + codRobot + "\033[0m" + ": A Iniciar Percurso...");
+            List<String> lis = modelR.getCaminho(codRobot);
+            System.out.print("\n\033[1;37m"+ "Percurso: " + "\033[0m" );
+            System.out.print(lis.get(0));
+            for(int i=1 ; i<lis.size(); i++){
+                System.out.print(" ⇒ ");
+                System.out.print(lis.get(i));
+            }
         }
-        catch (NullPointerException e){
-            System.out.println(e.getMessage());
+        catch (RotaNull | NullPointerException | OrigemIgualDestino | RobotNaoExiste re) {
+            System.out.println("\033[1;31m" + re.getMessage() +"\033[0m");
         }
     }
 
@@ -186,30 +182,34 @@ public class TextUI {
         try{
             System.out.println("Código Robot: ");
             String codRobot = scin.nextLine();
-            System.out.println(codRobot+ ": Entreguei a Palete.");
-            //Atualiza Estado do Robot
-            modelR.atualiza_estadoRobot(codRobot,0);
-            //Atualiza Localização do Robot
-            modelR.atualiza_LocalizacaoRobot(codRobot,1);
-            //Atualiza Localizacao da Palete
+            modelR.validaRobot(codRobot);
+            //Vai buscar a palete que o robot transporta
             String codPalete = modelR.getPaleteDoRobot(codRobot);
-            modelP.atualiza_localizacaoPalete(codPalete,modelR.getLocalizacaoRobot(codRobot),-1);
-            //Atualiza Estado do Vertice
-            modelR.atualizaOcupacaoVertice(modelP.getLocalizacaoPalete(codPalete),1);
-            //Retira Rota do Robot
-            modelR.alteraRota(codRobot,null);
-            System.out.println(codRobot+ ": Estou Disponível.");
-            String paleteZonaD = modelP.paleteZonaD();
-            if(paleteZonaD==null) System.out.println("Não há paletes por armazenar!");
-            else{
-                System.out.println("Ainda existem paletes na Zona de Descarga!");
-                System.out.println(codRobot+ ": Nova Tarefa.");
+            try {
+                modelP.validaEstadoInRobot(codPalete, 1);
+                //Atualiza Localização do Robot
+                modelR.atualiza_LocalizacaoRobot(codRobot, 1);
+                //Atualiza Localizacao da Palete
+                modelP.atualiza_localizacaoPalete(codPalete, modelR.getLocalizacaoRobot(codRobot), -1);
+                System.out.println("\033[1;35m" + codRobot + "\033[0m" + ": Entreguei a Palete " + "\033[1;35m" + codPalete + "\033[0m");
+                //Atualiza Estado do Robot
+                modelR.atualiza_estadoRobot(codRobot, 0);
+                //Atualiza Estado do Vertice
+                modelR.atualizaOcupacaoVertice(modelP.getLocalizacaoPalete(codPalete).getCodVertice(), 1);
+                //Retira Rota do Robot
+                modelR.alteraRota(codRobot, null);
+                System.out.println("\033[1;35m" + codRobot + "\033[0m" + ": Estou Disponível.");
+                String paleteZonaD = modelP.paleteZonaD();
+                System.out.println("\033[1;36m*\033[0m"+"Ainda existem paletes na Zona de Descarga!");
+                System.out.println("\033[1;35m" + codRobot + "\033[0m" + ": Nova Tarefa.");
                 comunicaOrdemTransporte(paleteZonaD);
+            }catch (NaoLevantouPalete e){
+                System.out.println("\033[1;31m" + e.getMessage() +"\033[0m");
             }
 
         }
-        catch (NullPointerException e){
-            System.out.println(e.getMessage() + " wtf");
+        catch (NullPointerException | RotaNull | SemPaletesParaTransportar | RobotNaoExiste e) {
+            System.out.println("\033[1;31m" + e.getMessage() +"\033[0m");
         }
     }
 
@@ -237,7 +237,7 @@ public class TextUI {
 
         }
         catch (NullPointerException e) {
-            System.out.println(e.getMessage()+ " ola");
+            System.out.println("\033[1;31m" + e.getMessage() +"\033[0m");
         }
     }
 }
