@@ -4,12 +4,15 @@ import java.util.Objects;
 
 public class Vertice {
 
-	private String codVertice;
-	private String designacao;
-	private int ocupacao; // se for -1 prateleira foi reservada para receber palete
+	private String codVertice; /** Código que identifica o Vertice*/
+	private String designacao; /** Código que identifica o tipo do Vertice: prateleira, canto ou zona*/
+	private int ocupacao;  /** Identifica o número de paletes localizadas no Vertice(prateleira ou zona). Como neste caso cada prateleira pode conter apenas uma palete pode tomar 3 valores diferentes:
+	 						0 se o Vertice ainda não possui nenhuma palete
+	 						1 se o Vertice está ocupado, ou seja, já possui uma palete
+	 						-1 se o Vertice ainda não possui nenhuma palete mas foi reservado para brevemente a receber*/
+
 
 	public Vertice(String codVertice, String designacao, int ocupacao) {
-
 		this.codVertice = codVertice;
 		this.designacao = designacao;
 		this.ocupacao = ocupacao;

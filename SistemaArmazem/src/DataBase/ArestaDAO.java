@@ -10,6 +10,8 @@ import java.util.*;
 public class ArestaDAO implements Map<String,Aresta>{
     private static ArestaDAO singleton = null;
 
+    //Construtor. É aqui que a tabela das arestas na base de dados é criada.
+    // Lança uma excepção caso haja algum problema.
     private ArestaDAO() {
 
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -28,6 +30,8 @@ public class ArestaDAO implements Map<String,Aresta>{
     }
 
 
+    //Implementação do padrão Singleton
+    //devolve a instância única desta classe
     public static ArestaDAO getInstance() {
         if (ArestaDAO.singleton == null) {
             ArestaDAO.singleton = new ArestaDAO();
@@ -36,7 +40,8 @@ public class ArestaDAO implements Map<String,Aresta>{
     }
 
 
-
+    @Override
+   //Este método devolve o número de entradas na tabela na base de dados
     public int size() {
         int i = 0;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -53,12 +58,15 @@ public class ArestaDAO implements Map<String,Aresta>{
         return i;
     }
 
-
+    @Override
+    //Método que devolve se uma tabela está vazia ou não
     public boolean isEmpty() {
         return this.size() == 0;
     }
 
-
+    @Override
+    //Método que devolve se o código de uma dada aresta se encontra registada na base de dados
+    //Lança exceção caso ocorra algum problema na procura.
     public boolean containsKey(Object key) {
         boolean r;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -73,12 +81,16 @@ public class ArestaDAO implements Map<String,Aresta>{
         return r;
     }
 
-
+    @Override
+    //Método que devolve se uma dada aresta se encontra registada na base de dados
     public boolean containsValue(Object value) {
         Aresta a = (Aresta) value;
         return this.containsKey(a.getCodAresta());
     }
 
+    @Override
+    //Método que devolve a aresta cujo código é o passado como argumento
+    //Lança exceção caso haja algum problema na procura na base de dados
     public Aresta get(Object key) {
         Aresta a = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -97,6 +109,7 @@ public class ArestaDAO implements Map<String,Aresta>{
         return a;
     }
 
+    //Método auxiliar da função get. Criado por questões de organização de código
     public Vertice getVertice(String cod) throws SQLException {
         Vertice v = null;
         try(Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -109,7 +122,9 @@ public class ArestaDAO implements Map<String,Aresta>{
         return v;
     }
 
-
+    @Override
+    //Adiconar entrada á tabela das arestas na base de dados. O código é a identificação do objeto na tabela
+    //É lançada exceção caso haja algum problema relativo á database
     public Aresta put(String key, Aresta value) {
         Aresta res = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -132,6 +147,10 @@ public class ArestaDAO implements Map<String,Aresta>{
     }
 
 
+    @Override
+    //Método que remove da tabela das arestas na database, a aresta cujo código é passado como argumento.
+    //É necessário por null em todas as referencias da aresta removida em outras tabelas
+    //Lançada exceção caso haja algum problema na base de dados
     public Aresta remove(Object key) {
         Aresta t = this.get(key);
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -146,6 +165,8 @@ public class ArestaDAO implements Map<String,Aresta>{
     }
 
 
+    @Override
+    //Método que adiciona de uma unica vez várias arestas á tabela na base de dados
     public void putAll(Map<? extends String, ? extends Aresta> vertices) {
         for(Aresta t : vertices.values()) {
             this.put(t.getCodAresta(), t);
@@ -153,6 +174,10 @@ public class ArestaDAO implements Map<String,Aresta>{
     }
 
 
+    @Override
+    //Método que elimina todas as entradas na tabela arestas.
+    //É necessário por null em todas as referencias da aresta removida em outras tabelas
+    //É lançada exceção caso haja algum problema com a base de dados
     public void clear() {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement()) {
@@ -170,6 +195,9 @@ public class ArestaDAO implements Map<String,Aresta>{
 
     }
 
+    @Override
+    //Método que devolve um set com todos os códigos de arestas presentes na base de dados
+    //É lançada exceção caso haja algum problema com a base de dados
     public Set<String> keySet() {
         Set<String> col = new HashSet<>();
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -185,6 +213,9 @@ public class ArestaDAO implements Map<String,Aresta>{
         return col;
     }
 
+    @Override
+    //Método que devolve uma collection com todos os objetos aresta presentes na base de dados
+    //É lançada exceção caso haja algum problema com a base de dados
     public Collection<Aresta> values() {
         Collection<Aresta> col = new HashSet<>();
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -201,6 +232,9 @@ public class ArestaDAO implements Map<String,Aresta>{
     }
 
 
+    @Override
+    //Método que devolve um set com todos "pares" formados pelo código de aresta e o objeto aresta correspondente
+    //É lançada exceção caso haja algum problema com a base de dados
     public Set<Map.Entry<String, Aresta>> entrySet() {
         Map.Entry<String,Aresta> entry;
         HashSet<Map.Entry<String, Aresta>> col = new HashSet<>();

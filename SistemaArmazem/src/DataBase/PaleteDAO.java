@@ -11,7 +11,8 @@ import java.util.*;
 public class PaleteDAO implements Map<String, Palete> {
     private static PaleteDAO singleton = null;
 
-
+    //Construtor. É aqui que a tabela das paletes na base de dados é criada.
+    // Lança uma excepção caso haja algum problema.
     private PaleteDAO() {
 
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -35,11 +36,9 @@ public class PaleteDAO implements Map<String, Palete> {
         }
     }
 
-    /**
-     * Implementação do padrão Singleton
-     *
-     * @return devolve a instância única desta classe
-     */
+
+    //Implementação do padrão Singleton
+    //devolve a instância única desta classe
     public static PaleteDAO getInstance() {
         if (PaleteDAO.singleton == null) {
             PaleteDAO.singleton = new PaleteDAO();
@@ -48,6 +47,7 @@ public class PaleteDAO implements Map<String, Palete> {
     }
 
     @Override
+    //Este método devolve o número de entradas na tabela na base de dados
     public int size() {
         int i = 0;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -65,9 +65,12 @@ public class PaleteDAO implements Map<String, Palete> {
     }
 
     @Override
+    //Método que devolve se uma tabela está vazia ou não
     public boolean isEmpty()  { return this.size() == 0; }
 
     @Override
+    //Método que devolve se o código de uma dada palete se encontra registada na base de dados
+    //Lança exceção caso ocorra algum problema na procura.
     public boolean containsKey(Object key) {
         boolean r;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -84,11 +87,13 @@ public class PaleteDAO implements Map<String, Palete> {
 
 
     @Override
+    //Método que devolve se uma dada palete se encontra registada na base de dados
     public boolean containsValue(Object value) {
         Palete a = (Palete) value;
         return this.containsKey(a.getCodPalete());
     }
 
+    //Método auxiliar da função get. Criado por questões de organização de código
     public Vertice getVertice(String cod) throws SQLException {
         Vertice v = null;
         try(Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -100,7 +105,11 @@ public class PaleteDAO implements Map<String, Palete> {
         }
         return v;
     }
+
+
     @Override
+    //Método que devolve a palete cujo código é o passado como argumento
+    //Lança exceção caso haja algum problema na procura na base de dados
     public Palete get(Object key) {
         Palete p = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -140,7 +149,11 @@ public class PaleteDAO implements Map<String, Palete> {
 
 
 
+
     @Override
+    //Método que adiciona uma entrada á tabela das paletes na base de dados.
+    // O código é a identificação do objeto na tabela
+    //É lançada exceção caso haja algum problema relativo á database
     public Palete put(String s, Palete palete) {
         Palete res = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -158,6 +171,9 @@ public class PaleteDAO implements Map<String, Palete> {
 
 
     @Override
+    //Método que remove da tabela das paletes na database, a palete cujo código é passado como argumento.
+    //É necessário por null em todas as referencias da palete removida em outras tabelas
+    //Lançada exceção caso haja algum problema na base de dados
     public Palete remove(Object key) {
         Palete t = this.get(key);
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -173,6 +189,7 @@ public class PaleteDAO implements Map<String, Palete> {
 
 
     @Override
+    //Método que adiciona de uma unica vez várias paletes á tabela na base de dados
     public void putAll(Map<? extends String, ? extends Palete> paletes) {
         for(Palete p : paletes.values()) {
             this.put(p.getCodPalete(), p);
@@ -180,6 +197,9 @@ public class PaleteDAO implements Map<String, Palete> {
     }
 
     @Override
+    //Método que elimina todas as entradas na tabela paletes.
+    //É necessário por null em todas as referencias da palete removida em outras tabelas
+    //É lançada exceção caso haja algum problema com a base de dados
     public void clear() {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement()) {
@@ -197,6 +217,8 @@ public class PaleteDAO implements Map<String, Palete> {
     }
 
     @Override
+    //Método que devolve um set com todos os códigos de paletes presentes na base de dados
+    //É lançada exceção caso haja algum problema com a base de dados
     public Set<String> keySet() {
         Set<String> col = new HashSet<>();
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -214,6 +236,8 @@ public class PaleteDAO implements Map<String, Palete> {
 
 
     @Override
+    //Método que devolve uma collection com todos os objetos palete presentes na base de dados
+    //É lançada exceção caso haja algum problema com a base de dados
     public Collection<Palete> values() {
         Collection<Palete> col = new HashSet<>();
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -230,6 +254,8 @@ public class PaleteDAO implements Map<String, Palete> {
     }
 
     @Override
+    //Método que devolve um set com todos "pares" formados pelo código de palete e o objeto palete correspondente
+    //É lançada exceção caso haja algum problema com a base de dados
     public Set<Entry<String, Palete>> entrySet() {
         Map.Entry<String,Palete> entry;
         HashSet<Entry<String, Palete>> col = new HashSet<>();

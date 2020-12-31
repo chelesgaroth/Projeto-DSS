@@ -12,6 +12,8 @@ import java.util.*;
 public class RobotDAO implements Map<String, Robot> {
     private static RobotDAO singleton = null;
 
+    //Construtor. É aqui que a tabela dos robots na base de dados é criada.
+    // Lança uma excepção caso haja algum problema.
     private RobotDAO() {
 
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -44,6 +46,8 @@ public class RobotDAO implements Map<String, Robot> {
         }
     }
 
+    //Implementação do padrão Singleton
+    //devolve a instância única desta classe
     public static RobotDAO getInstance() {
         if (RobotDAO.singleton == null) {
             RobotDAO.singleton = new RobotDAO();
@@ -52,6 +56,7 @@ public class RobotDAO implements Map<String, Robot> {
     }
 
     @Override
+    //Este método devolve o número de entradas na tabela na base de dados
     public int size() {
         int i = 0;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -69,11 +74,14 @@ public class RobotDAO implements Map<String, Robot> {
     }
 
     @Override
+    //Método que devolve se uma tabela está vazia ou não
     public boolean isEmpty() {
         return this.size() == 0;
     }
 
     @Override
+    //Método que devolve se o código de um dado robot se encontra registado na base de dados
+    //Lança exceção caso ocorra algum problema na procura.
     public boolean containsKey(Object key) {
         boolean r;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -89,11 +97,13 @@ public class RobotDAO implements Map<String, Robot> {
     }
 
     @Override
+    //Método que devolve se uma dado robot se encontra registado na base de dados
     public boolean containsValue(Object value) {
         Robot a = (Robot) value;
         return this.containsKey(a.getCodRobot());
     }
 
+    //Método auxiliar da função get. Criado por questões de organização de código
     public Vertice getVertice(String cod) throws SQLException {
         Vertice v = null;
         try(Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -107,6 +117,8 @@ public class RobotDAO implements Map<String, Robot> {
     }
 
     @Override
+    //Método que devolve a aresta cujo código é o passado como argumento
+    //Lança exceção caso haja algum problema na procura na base de dados
     public Robot get(Object key) {
         Robot t = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -152,6 +164,7 @@ public class RobotDAO implements Map<String, Robot> {
         return t;
     }
 
+    //Método auxiliar da função get. Criado por questões de organização de código
     public Aresta getAresta(String cod) throws SQLException {
         Aresta a = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -176,6 +189,10 @@ public class RobotDAO implements Map<String, Robot> {
     }*/
 
 
+    @Override
+    //Método que adiciona uma entrada á tabela dos robots na base de dados.
+    // O código é a identificação do objeto na tabela
+    //É lançada exceção caso haja algum problema relativo á database
     public Robot put(String key, Robot robot) {
         Robot res = null;
         Rota rota = robot.getRota();
@@ -272,6 +289,9 @@ public class RobotDAO implements Map<String, Robot> {
     }
 
     @Override
+    //Método que remove da tabela dos robots na database, o robot cujo código é passado como argumento.
+    //É necessário por null em todas as referencias do robot removido em outras tabelas
+    //Lançada exceção caso haja algum problema na base de dados
     public Robot remove(Object key) {
         Robot t = this.get(key);
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -290,6 +310,7 @@ public class RobotDAO implements Map<String, Robot> {
     }
 
     @Override
+    //Método que adiciona de uma unica vez vários robots á tabela na base de dados
     public void putAll(Map<? extends String, ? extends Robot> map) {
         for(Robot t : map.values()) {
             this.put(t.getCodRobot(), t);
@@ -297,6 +318,9 @@ public class RobotDAO implements Map<String, Robot> {
     }
 
     @Override
+    //Método que elimina todas as entradas na tabela robots.
+    //É necessário por null em todas as referencias do robot removido em outras tabelas
+    //É lançada exceção caso haja algum problema com a base de dados
     public void clear() {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement()) {
@@ -314,6 +338,8 @@ public class RobotDAO implements Map<String, Robot> {
     }
 
     @Override
+    //Método que devolve um set com todos os códigos de robots presentes na base de dados
+    //É lançada exceção caso haja algum problema com a base de dados
     public Set<String> keySet() {
         Set<String> col = new HashSet<>();
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -330,6 +356,8 @@ public class RobotDAO implements Map<String, Robot> {
     }
 
     @Override
+    //Método que devolve uma collection com todos os objetos robot presentes na base de dados
+    //É lançada exceção caso haja algum problema com a base de dados
     public Collection<Robot> values() {
         Collection<Robot> res = new HashSet<>();
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -349,6 +377,8 @@ public class RobotDAO implements Map<String, Robot> {
     }
 
     @Override
+    //Método que devolve um set com todos "pares" formados pelo código de robot e o objeto robot correspondente
+    //É lançada exceção caso haja algum problema com a base de dados
     public Set<Entry<String, Robot>> entrySet() {
         Map.Entry<String,Robot> entry;
         HashSet<Map.Entry<String, Robot>> col = new HashSet<>();

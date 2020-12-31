@@ -4,10 +4,12 @@ import Exceptions.RotaNull;
 
 public class Robot {
 
-	private String codRobot;
-	private Rota rota;
-	private int estado; /** 0 = Disponível; 1 = Ocupado */
-	private Vertice localizacao;
+	private String codRobot; /** Código que identifica a Rota*/
+	private Rota rota; /** Rota atribuida ao Robot. É null se Robot ainda não tiver nenhuma Rota atribuida*/
+	private int estado; /** Indica o estado do Robot no momento:
+	 						0 se Robot não tem nenhuma Rota atribuida, ou seja, está disponivel para fazer uma nova tarefa;
+	 						1 se Robot tem uma Rota atribuida, ou seja, está ocupado a fazer uma tarefa.*/
+	private Vertice localizacao; /** Vertice onde o Robot se localiza*/
 
 	public Robot(String codRobot, int estado, Vertice localizacao, Rota rota) {
 		this.rota = rota;

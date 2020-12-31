@@ -2,8 +2,8 @@ package GestPaletes;
 
 public class QRCode {
 
-	private String codQR;
-	private String produto;
+	private String codQR; /** Código QR */
+	private String produto; /** Designação do Produto */
 
 	public QRCode(String codQR, String produto) {
 		this.codQR = codQR;

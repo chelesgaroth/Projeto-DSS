@@ -6,11 +6,11 @@ import java.util.*;
 
 public class Rota {
 
-	private String codRota;
-	private Collection<Aresta> caminho;
-	private Vertice origem;
-	private Vertice destino;
-	private String codPalete;
+	private String codRota; /** Código que identifica a Rota*/
+	private Collection<Aresta> caminho; /** Lista de Arestas que definem um caminho a percorrer pelo Robot*/
+	private Vertice origem; /** Vertice onde se localiza a palete a recolher*/
+	private Vertice destino; /** Vertice onde a Palete irá ser entregue*/
+	private String codPalete; /** Código que identifica a Palete que o Robot irá transportar*/
 
 
 	public Rota(String codRota, Vertice origem, Vertice destino, String codPalete, Collection<Aresta> caminho) {

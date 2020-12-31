@@ -10,7 +10,7 @@ public class Tabela {
     private int linhas;
     private Map<String,String> res;
 
-    private List<Menu.MenuHandler> handlers;
+
 
     public Tabela(){
         this.titulo = " ";
@@ -18,7 +18,6 @@ public class Tabela {
         this.subtitulos= new String[this.colunas];
         this.linhas = 0;
         this.res = new HashMap<>();
-        this.handlers = new ArrayList<>();
     }
 
 

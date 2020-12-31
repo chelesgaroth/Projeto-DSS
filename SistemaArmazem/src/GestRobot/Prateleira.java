@@ -2,8 +2,10 @@ package GestRobot;
 
 public class Prateleira {
 
-	private String codPrateleira;
-	private int disponibilidade;
+	private String codPrateleira; /** Código que identifica a prateleira */
+	private int disponibilidade;  /** 0 - A Prateleira está disponível
+	 								  1 - A Prateleira está ocupada
+	 								  2 - A Prateleira está reservada para uma palete que se encontra a ser transportada*/
 
 	public Prateleira(String codPrateleira, int disponibilidade) {
 		this.codPrateleira = codPrateleira;

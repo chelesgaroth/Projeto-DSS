@@ -2,10 +2,10 @@ package GestRobot;
 
 public class Aresta {
 
-	private Vertice verticeFinal;
-	private Vertice verticeInicial;
-	private String codAresta;
-	private float dist;
+	private Vertice verticeFinal; /** Vertice onde acaba a Aresta */
+	private Vertice verticeInicial; /** Vertice onde começa a Aresta */
+	private String codAresta; /** Código que identifica a Aresta*/
+	private float dist; /** Distancia entre verticeInicial e verticeFinal*/
 
 	public Aresta(Vertice verticeFinal, Vertice verticeInicial, String codAresta, float dist) {
 		this.verticeFinal = verticeFinal;
@@ -45,6 +45,7 @@ public class Aresta {
 	public void setDist(float dist) {
 		this.dist = dist;
 	}
+
 
 	public String toString() {
 		return "Aresta:" +

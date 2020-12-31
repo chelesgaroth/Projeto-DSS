@@ -9,7 +9,8 @@ public class QRCodeDAO implements Map<String, QRCode> {
 
     private static QRCodeDAO singleton = null;
 
-
+    //Construtor. É aqui que a tabela dos QRCodes na base de dados é criada.
+    // Lança uma excepção caso haja algum problema.
     private QRCodeDAO() {
 
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -25,7 +26,8 @@ public class QRCodeDAO implements Map<String, QRCode> {
         }
     }
 
-
+    //Implementação do padrão Singleton
+    //devolve a instância única desta classe
     public static QRCodeDAO getInstance() {
         if (QRCodeDAO.singleton == null) {
             QRCodeDAO.singleton = new QRCodeDAO();
@@ -33,8 +35,8 @@ public class QRCodeDAO implements Map<String, QRCode> {
         return QRCodeDAO.singleton;
     }
 
-
-
+    @Override
+    //Este método devolve o número de entradas na tabela na base de dados
     public int size() {
         int i = 0;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -51,12 +53,15 @@ public class QRCodeDAO implements Map<String, QRCode> {
         return i;
     }
 
-
+    @Override
+    //Método que devolve se uma tabela está vazia ou não
     public boolean isEmpty() {
         return this.size() == 0;
     }
 
-
+    @Override
+    //Método que devolve se uma dado código de QRCode se encontra registado na base de dados
+    //Lança exceção caso ocorra algum problema na procura.
     public boolean containsKey(Object key) {
         boolean r;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -72,12 +77,16 @@ public class QRCodeDAO implements Map<String, QRCode> {
     }
 
 
+    @Override
+    //Método que devolve se uma dado QRCode se encontra registado na base de dados
     public boolean containsValue(Object value) {
         QRCode a = (QRCode) value;
         return this.containsKey(a.getCodQR());
     }
 
-
+    @Override
+    //Método que devolve o QRCode cujo código é o passado como argumento
+    //Lança exceção caso haja algum problema na procura na base de dados
     public QRCode get(Object key) {
         QRCode a = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -95,6 +104,10 @@ public class QRCodeDAO implements Map<String, QRCode> {
     }
 
 
+    @Override
+    //Método que adiciona uma entrada á tabela dos QRCodes na base de dados.
+    // O código é a identificação do objeto na tabela
+    //É lançada exceção caso haja algum problema relativo á database
     public QRCode put(String key, QRCode value) {
         QRCode res = null;
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -112,7 +125,10 @@ public class QRCodeDAO implements Map<String, QRCode> {
         return res;
     }
 
-
+    @Override
+    //Método que remove da tabela dos QRcodes na database, o qrCode cujo código é passado como argumento.
+    //É necessário por null em todas as referencias do qrCode removido em outras tabelas
+    //Lançada exceção caso haja algum problema na base de dados
     public QRCode remove(Object key) {
         QRCode t = this.get(key);
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -126,7 +142,8 @@ public class QRCodeDAO implements Map<String, QRCode> {
         return t;
     }
 
-
+    @Override
+    //Método que adiciona de uma unica vez vários qrCodes á tabela na base de dados
     public void putAll(Map<? extends String, ? extends QRCode> qrcodes) {
         for(QRCode t : qrcodes.values()) {
             this.put(t.getCodQR(), t);
@@ -134,7 +151,10 @@ public class QRCodeDAO implements Map<String, QRCode> {
 
     }
 
-
+    @Override
+    //Método que elimina todas as entradas na tabela qrCodes.
+    //É necessário por null em todas as referencias do qrCode removido em outras tabelas
+    //É lançada exceção caso haja algum problema com a base de dados
     public void clear() {
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
              Statement stm = conn.createStatement()) {
@@ -148,6 +168,9 @@ public class QRCodeDAO implements Map<String, QRCode> {
 
     }
 
+    @Override
+    //Método que devolve um set com todos os códigos de qrCodes presentes na base de dados
+    //É lançada exceção caso haja algum problema com a base de dados
     public Set<String> keySet() {
         Set<String> col = new HashSet<>();
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -163,6 +186,9 @@ public class QRCodeDAO implements Map<String, QRCode> {
         return col;
     }
 
+    @Override
+    //Método que devolve uma collection com todos os objetos qrCode presentes na base de dados
+    //É lançada exceção caso haja algum problema com a base de dados
     public Collection<QRCode> values() {
         Collection<QRCode> col = new HashSet<>();
         try (Connection conn = DriverManager.getConnection(DAOconfig.URL, DAOconfig.USERNAME, DAOconfig.PASSWORD);
@@ -178,7 +204,9 @@ public class QRCodeDAO implements Map<String, QRCode> {
         return col;
     }
 
-
+    @Override
+    //Método que devolve um set com todos "pares" formados pelo código de QRcode e o objeto qrCode correspondente
+    //É lançada exceção caso haja algum problema com a base de dados
     public Set<Entry<String, QRCode>> entrySet() {
         Map.Entry<String,QRCode> entry;
         HashSet<Entry<String, QRCode>> col = new HashSet<>();
