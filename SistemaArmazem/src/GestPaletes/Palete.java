@@ -6,7 +6,8 @@ public class Palete {
 	private QRCode codQR;        /** Código QR */
 	private String codPalete;	 /** Código da Palete */
 	private int inRobot;		 /** 0 - Caso não esteja num Robot ; 1 - Caso esteja num Robot ; 2 - Reservada para um robot */
-	private Vertice localizacao; /** Vértice onde a palete se encontra , podendo ser null , caso esteja num Robot */
+	private Vertice localizacao; /** Vértice onde a palete se encontra , caso a palete se encontre num Robot não devemos
+	 								 ter em conta este Vertice*/
 
 
 	public Palete(QRCode codQR, String codPalete, int inRobot, Vertice localizacao) {
