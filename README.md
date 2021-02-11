@@ -1,7 +1,7 @@
 # Sistema de Gestão de um Armazém
 
 Este projeto foi realizado ao longo do semestre em âmbito da UC DSS. Basicamente, consistiu em desenvolver um software de gestão de
-um armazém, no qual trabalham robots autónomos e se guardam diversas paletes. No entanto, o
+um armazém, no qual trabalham robots autónomos e são guardadas diversas paletes. No entanto, o
 projeto teve se ser desenvolvido em 3 fases, sendo que apenas a última implicou fazer código. Esta
 metodologia nunca tinha sido usada pelo grupo, mas mostrou-se bastante útil, na medida em que a
 definição dos use cases, dos subsistemas, dos diagramas de classes e outros, permite desenvolver
