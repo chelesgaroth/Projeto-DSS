@@ -9,3 +9,9 @@ progressivamente uma solução, sendo esta modificada sempre que necessário. Is
 vantagem enorme, visto que se se implementasse código sem nenhuma análise prévia e caso este
 fosse complexo, se fossem encontradas incoerências, corrigi-las seria extremamente trabalhoso.
 Assim, apenas implementamos uma solução sólida que temos a certeza que satisfaz os requisitos.
+
+
+## Authors
+* Ana Filipa Pereira
+* [Carolina Santejo](https://github.com/CarolinaSantejo)
+* [Raquel Costa](https://github.com/chelesgaroth)
