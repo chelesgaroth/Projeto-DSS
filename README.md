@@ -10,6 +10,7 @@ vantagem enorme, visto que se se implementasse código sem nenhuma análise pré
 fosse complexo, se fossem encontradas incoerências, corrigi-las seria extremamente trabalhoso.
 Assim, apenas implementamos uma solução sólida que temos a certeza que satisfaz os requisitos.
 
+Nota Final: 17
 
 ## Authors
 * [Ana Filipa Pereira](https://github.com/FilipaPereira00)
